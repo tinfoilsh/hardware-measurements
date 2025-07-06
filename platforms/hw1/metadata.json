@@ -1,0 +1,15 @@
+{
+  "qcow2": "/home/shadeform/tdx/guest-tools/image/tdx-guest-ubuntu-24.04-generic.qcow2",
+  "bios": "/usr/share/ovmf/OVMF.fd",
+  "kernel": "/home/shadeform/tdx/guest-tools/image/vmlinuz-24.04",
+  "initrd": "/home/shadeform/tdx/guest-tools/image/initrd.img-24.04",
+  "cmdline": "root=/dev/sda1 console=ttyS0",
+  "acpi_tables": "metadata/acpi_tables.bin",
+  "rsdp": "metadata/rsdp.bin",
+  "table_loader": "metadata/table_loader.bin",
+  "boot_order": "metadata/BootOrder.bin",
+  "boot_0000": "metadata/Boot0000.bin",
+  "boot_0001": "metadata/Boot0001.bin",
+  "boot_0006": "metadata/Boot0006.bin",
+  "boot_0007": "metadata/Boot0007.bin"
+}
