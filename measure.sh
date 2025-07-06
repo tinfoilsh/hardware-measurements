@@ -3,12 +3,10 @@
 rm -rf measurements/
 mkdir -p measurements/
 
-latest_commit=$(git rev-parse HEAD)
-
 for dir in platforms/*; do
     name=$(basename $dir)
     echo "Measuring $name"
-    ./dstack-mr measure $dir/metadata.json --cpu 32 --memory 100G --json-file measurements/${name}.${latest_commit}.json
+    ./dstack-mr measure $dir/metadata.json --rtmr0-only --cpu 32 --memory 100G --json-file measurements/${name}.json
 done
 
 # Combine all measurement files into one JSON, with platform names as keys

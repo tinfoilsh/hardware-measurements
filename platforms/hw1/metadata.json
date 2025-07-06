@@ -1,8 +1,5 @@
 {
-  "qcow2": "/home/shadeform/tdx/guest-tools/image/tdx-guest-ubuntu-24.04-generic.qcow2",
-  "bios": "/usr/share/ovmf/OVMF.fd",
-  "kernel": "/home/shadeform/tdx/guest-tools/image/vmlinuz-24.04",
-  "initrd": "/home/shadeform/tdx/guest-tools/image/initrd.img-24.04",
+  "bios": "../../OVMF.fd",
   "cmdline": "root=/dev/sda1 console=ttyS0",
   "acpi_tables": "metadata/acpi_tables.bin",
   "rsdp": "metadata/rsdp.bin",
