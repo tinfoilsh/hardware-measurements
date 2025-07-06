@@ -1,0 +1,51 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  id-token: write
+  attestations: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - run: ./measure.sh
+
+    - name: Hash platform measurements
+      shell: bash
+      id: hash
+      run: |
+        echo stdout=sha256:$(sudo sha256sum platform-measurements.json | cut -d ' ' -f 1 | sudo tee latest.hash) >> $GITHUB_OUTPUT
+
+    - name: Attest
+      uses: actions/attest@v1
+      id: attest
+      with:
+        subject-name: platform-measurements.json
+        subject-digest: ${{ steps.hash.outputs.stdout }}
+        predicate-type: https://tinfoil.sh/predicate/tdx-platform-measurements/v1
+        predicate-path: platform-measurements.json
+
+    - name: Generate release notes
+      id: generate-release-notes
+      shell: bash
+      run: |
+        RELEASE_NOTES=$(cat output/release.md)
+        echo "release-notes<<EOF" >> "$GITHUB_OUTPUT"
+        echo "${RELEASE_NOTES}" >> "$GITHUB_OUTPUT"
+        echo "Digest: \`$(cat latest.hash)\`" >> "$GITHUB_OUTPUT"
+        echo "Sigstore Link: ${{ steps.attest.outputs.bundle-url }}" >> "$GITHUB_OUTPUT"
+        echo "EOF" >> "$GITHUB_OUTPUT"
+
+    - name: Create release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          platform-measurements.json
+          latest.hash
+        body: ${{ steps.generate-release-notes.outputs.release-notes }}

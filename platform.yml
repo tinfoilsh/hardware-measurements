@@ -1,7 +1,0 @@
-hw1:
-  bios: /usr/share/ovmf/OVMF.fd
-  kernel: ~/tdx/guest-tools/image/vmlinuz-24.04
-  initrd: ~/tdx/guest-tools/image/initrd.img-24.04
-  cmdline: root=/dev/sda1 console=ttyS0
-  cpus: 32
-  memory: 100
