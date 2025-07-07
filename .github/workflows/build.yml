@@ -17,6 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - run: ./fetch-tdx-measure.sh
     - run: ./fetch-ovmf.sh
     - run: ./measure.sh
 
