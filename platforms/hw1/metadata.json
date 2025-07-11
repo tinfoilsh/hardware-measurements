@@ -1,12 +1,12 @@
 {
-  "bios": "../../OVMF.fd",
-  "cmdline": "root=/dev/sda1 console=ttyS0",
-  "acpi_tables": "metadata/acpi_tables.bin",
-  "rsdp": "metadata/rsdp.bin",
-  "table_loader": "metadata/table_loader.bin",
-  "boot_order": "metadata/BootOrder.bin",
-  "boot_0000": "metadata/Boot0000.bin",
-  "boot_0001": "metadata/Boot0001.bin",
-  "boot_0006": "metadata/Boot0006.bin",
-  "boot_0007": "metadata/Boot0007.bin"
+  "boot_config": {
+    "cpus": 32,
+    "memory": "524288M",
+    "bios": "../../OVMF.fd",
+    "acpi_tables": "metadata/acpi_tables.bin",
+    "rsdp": "metadata/rsdp.bin",
+    "table_loader": "metadata/table_loader.bin",
+    "boot_order": "metadata/BootOrder.bin",
+    "path_boot_xxxx": "metadata/"
+  }
 }
