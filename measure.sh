@@ -18,6 +18,6 @@ for file in measurements/*.json; do
 done
 
 # # Merge all platform JSONs into a single file
-jq -s 'reduce .[] as $item ({}; . * $item)' measurements/*.json > platform-measurements.json
+jq -s 'reduce .[] as $item ({}; . * $item)' measurements/*.json > hardware-measurements.json
 
 rm -rf measurements/

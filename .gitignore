@@ -1,4 +1,4 @@
 tdx-measure
 measurements/
-platform-measurements.json
+hardware-measurements.json
 OVMF.fd
