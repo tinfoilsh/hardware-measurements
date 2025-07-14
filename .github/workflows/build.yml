@@ -33,7 +33,7 @@ jobs:
       with:
         subject-name: hardware-measurements.json
         subject-digest: ${{ steps.hash.outputs.stdout }}
-        predicate-type: https://tinfoil.sh/predicate/tdx-hardware-measurements/v1
+        predicate-type: https://tinfoil.sh/predicate/hardware-measurements/v1
         predicate-path: hardware-measurements.json
 
     - name: Create release
