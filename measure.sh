@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 rm -rf measurements/
 mkdir -p measurements/
 

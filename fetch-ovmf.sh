@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 echo "Fetching OVMF.fd"
 expected_hash="9e807cb2cd4313406a3aa4becc0836671a5c64ca7bdc08a45e15260184b446bf"
 wget -q http://archive.ubuntu.com/ubuntu/pool/main/e/edk2/ovmf_2025.02-3ubuntu2_all.deb -O ovmf.deb
