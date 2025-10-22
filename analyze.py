@@ -45,6 +45,13 @@ def compare_platforms():
     
     all_files = sorted(all_files)
     
+    # Track platform pairs that match for all files
+    platform_matches = {}
+    for i, platform1 in enumerate(platforms):
+        for j, platform2 in enumerate(platforms):
+            if i < j:  # Only check each pair once
+                platform_matches[(platform1, platform2)] = True
+    
     for filename in all_files:
         print(f"\nFile: {filename}")
         print("-" * (len(filename) + 6))
@@ -61,7 +68,7 @@ def compare_platforms():
             print(f"{platform:>12}", end="")
         print()
         
-        # Print comparison matrix
+        # Print comparison matrix and update match tracking
         for i, platform1 in enumerate(platforms):
             print(f"{platform1:>12}", end="")
             for j, platform2 in enumerate(platforms):
@@ -71,13 +78,36 @@ def compare_platforms():
                         symbol = "?"  # Both missing
                     else:
                         symbol = "✗"  # One missing
+                        # Mark this pair as not matching if one has missing files
+                        if i < j and (platform1, platform2) in platform_matches:
+                            platform_matches[(platform1, platform2)] = False
+                        elif j < i and (platform2, platform1) in platform_matches:
+                            platform_matches[(platform2, platform1)] = False
                 elif file_hashes[platform1] == file_hashes[platform2]:
                     symbol = "✓"  # Match
                 else:
                     symbol = "-"  # Different
+                    # Mark this pair as not matching if files are different
+                    if i < j and (platform1, platform2) in platform_matches:
+                        platform_matches[(platform1, platform2)] = False
+                    elif j < i and (platform2, platform1) in platform_matches:
+                        platform_matches[(platform2, platform1)] = False
                 
                 print(f"{symbol:>12}", end="")
             print()
+    
+    # Print matched platform pairs at the end
+    matched_pairs = [(p1, p2) for (p1, p2), matches in platform_matches.items() if matches]
+    if matched_pairs:
+        print("\n" + "="*50)
+        print("COMPLETE MATCHES:")
+        print("="*50)
+        for platform1, platform2 in matched_pairs:
+            print(f"Complete match: {platform1} ↔ {platform2}")
+    else:
+        print("\n" + "="*50)
+        print("No complete matches found between any platform pairs.")
+        print("="*50)
         
 if __name__ == "__main__":
     compare_platforms()
