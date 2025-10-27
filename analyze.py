@@ -23,11 +23,20 @@ def get_platforms():
 
 def get_metadata_files(platform):
     """Get list of metadata files for a platform."""
-    metadata_dir = Path('platforms') / platform / 'metadata'
-    if not metadata_dir.exists():
-        return []
+    files = []
     
-    files = [f.name for f in metadata_dir.iterdir() if f.is_file()]
+    # Get files from metadata/ subdirectory
+    metadata_dir = Path('platforms') / platform / 'metadata'
+    if metadata_dir.exists():
+        metadata_files = [f"metadata/{f.name}" for f in metadata_dir.iterdir() if f.is_file()]
+        files.extend(metadata_files)
+    
+    # Get metadata.json from platform root
+    platform_dir = Path('platforms') / platform
+    metadata_json = platform_dir / 'metadata.json'
+    if metadata_json.exists():
+        files.append('metadata.json')
+    
     return sorted(files)
 
 def compare_platforms():
@@ -59,7 +68,12 @@ def compare_platforms():
         # Calculate hashes for this file across all platforms
         file_hashes = {}
         for platform in platforms:
-            filepath = Path('platforms') / platform / 'metadata' / filename
+            if filename.startswith('metadata/'):
+                # File is in the metadata subdirectory
+                filepath = Path('platforms') / platform / filename
+            else:
+                # File is in the platform root (e.g., metadata.json)
+                filepath = Path('platforms') / platform / filename
             file_hashes[platform] = get_file_hash(filepath)
         
         # Print platform headers
