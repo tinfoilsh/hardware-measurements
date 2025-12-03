@@ -1,5 +1,5 @@
 {
-"boot_config": {
+  "boot_config": {
     "cpus": 32,
     "memory": "524288M",
     "bios": "../../OVMF.fd",
@@ -8,5 +8,5 @@
     "table_loader": "metadata/table_loader.bin",
     "boot_order": "metadata/BootOrder.bin",
     "path_boot_xxxx": "metadata/"
-}
+ }
 }
