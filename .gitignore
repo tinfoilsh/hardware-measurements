@@ -2,3 +2,4 @@ tdx-measure
 measurements/
 hardware-measurements.json
 OVMF.fd
+__pycache__
