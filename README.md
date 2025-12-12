@@ -1,6 +1,6 @@
 # Tinfoil Hardware Measurements
 
-This repository contains platform configs for the different hardware and confidential VM configurations considered trusted by Tinfoil.
+This repository contains platform configs for the different hardware and confidential VM configurations trusted by the Tinfoil clients when verifying remote attestation reports.
 These configs are used to derive offline measurements which are then published on a transparency log (Sigstore).
 These measurements are then used to verify attestation reports provided by trusted computing environments.
 
@@ -10,7 +10,7 @@ These measurements are then used to verify attestation reports provided by trust
 - `measure.sh` - Script to generate hardware measurements for all platforms
 - `fetch-tdx-measure.sh` - Downloads the tdx-measure tool
 - `fetch-ovmf.sh` - Downloads the OVMF firmware
-- `analyze.py` - Utility to compares metadata files across platform configs
+- `analyze.py` - Utility to compare metadata files across platform configs
 
 ## Usage
 
