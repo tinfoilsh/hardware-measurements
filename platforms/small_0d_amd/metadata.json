@@ -1,0 +1,10 @@
+{
+    "boot_config": {
+        "cpus": 8,
+        "memory": "16384M",
+        "bios": "../../OVMF.fd",
+        "acpi_tables": "metadata/acpi_tables.bin",
+        "rsdp": "metadata/rsdp.bin",
+        "table_loader": "metadata/table_loader.bin"
+    }
+}
