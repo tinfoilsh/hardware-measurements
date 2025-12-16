@@ -6,7 +6,17 @@
         "acpi_tables": "metadata/acpi_tables.bin",
         "rsdp": "metadata/rsdp.bin",
         "table_loader": "metadata/table_loader.bin",
-        "boot_order": "metadata/BootOrder.bin",
-        "path_boot_xxxx": "metadata/"
+        "extra_qemu_args": [
+            "-global", "q35-pcihost.pci-hole64-size=4096G",
+            "-fw_cfg", "name=opt/ovmf/X-PciMmio64Mb,string=262144",
+            "-device", "e1000,romfile=",
+            "-device", "virtio-balloon-pci",
+            "-device", "virtio-scsi-pci",
+            "-device", "virtio-scsi-pci",
+            "-device", "virtio-scsi-pci",
+            "-device", "virtio-scsi-pci",
+            "-device", "pcie-root-port,id=pci.1",
+            "-device", "virtio-rng-pci,bus=pci.1"
+        ]
     }
 }
