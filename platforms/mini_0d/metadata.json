@@ -6,7 +6,13 @@
         "acpi_tables": "metadata/acpi_tables.bin",
         "rsdp": "metadata/rsdp.bin",
         "table_loader": "metadata/table_loader.bin",
-        "boot_order": "metadata/BootOrder.bin",
-        "path_boot_xxxx": "metadata/"
+        "extra_qemu_args": [
+            "-global", "q35-pcihost.pci-hole64-size=4096G",
+            "-device", "virtio-net-pci,romfile=",
+            "-device", "virtio-scsi-pci",
+            "-device", "virtio-scsi-pci",
+            "-device", "virtio-scsi-pci",
+            "-device", "virtio-scsi-pci"
+        ]
     }
 }
