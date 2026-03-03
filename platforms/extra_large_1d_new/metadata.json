@@ -1,6 +1,6 @@
 {
     "boot_config": {
-        "cpus": 32,
+        "cpus": 64,
         "memory": "524288M",
         "bios": "../../OVMF.fd",
         "acpi_tables": "metadata/acpi_tables.bin",
