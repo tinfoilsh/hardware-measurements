@@ -18,6 +18,8 @@ jobs:
     - uses: actions/checkout@v4
 
     - run: ./fetch-tdx-measure.sh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - run: ./fetch-ovmf.sh
     - run: ./measure.sh
 
