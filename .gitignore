@@ -1,6 +1,5 @@
-tdx-measure
-measurements/
 hardware-measurements.json
-transcripts/
-OVMF.fd
+tinfoil.hash
+platform-endorsements.json
+platform-endorsements.hash
 __pycache__

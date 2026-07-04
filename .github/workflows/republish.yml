@@ -1,0 +1,81 @@
+name: Republish v1 measurements
+
+# This repository is a frozen republisher on a deprecation path: it re-signs
+# the measurements section of the canonical platform-endorsements artifact as
+# the legacy hardware-measurements.json (v1) under this repository's signing
+# identity, which legacy verifiers pin. It will be archived when legacy
+# client support ends. Do not edit measurements here.
+
+on:
+  repository_dispatch:
+    types: [republish]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "platform-endorsements release tag to republish (e.g. v0.1.0)"
+        required: true
+
+permissions:
+  id-token: write
+  attestations: write
+  contents: write
+
+jobs:
+  republish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Resolve upstream tag
+      id: tag
+      run: |
+        TAG="${{ github.event.client_payload.tag || github.event.inputs.tag }}"
+        if [ -z "$TAG" ]; then
+          echo "no tag provided" >&2
+          exit 1
+        fi
+        echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+    - name: Download canonical artifact
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release download "${{ steps.tag.outputs.tag }}" \
+          --repo tinfoilsh/platform-endorsements \
+          --pattern 'platform-endorsements.json' \
+          --pattern 'platform-endorsements.hash'
+
+    - name: Verify canonical artifact integrity and provenance
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "$(cat platform-endorsements.hash)  platform-endorsements.json" | sha256sum --check
+        gh attestation verify platform-endorsements.json \
+          --repo tinfoilsh/platform-endorsements \
+          --predicate-type https://tinfoil.sh/predicate/platform-endorsements/v1
+
+    - name: Extract v1 measurements
+      run: |
+        jq '.measurements' platform-endorsements.json > hardware-measurements.json
+        jq -e 'length > 0' hardware-measurements.json > /dev/null
+
+    - name: Hash v1 measurements
+      shell: bash
+      id: hash
+      run: |
+        echo stdout=sha256:$(sha256sum hardware-measurements.json | cut -d ' ' -f 1 | tee tinfoil.hash) >> $GITHUB_OUTPUT
+
+    - name: Attest
+      uses: actions/attest@67422f5511b7ff725f4dbd6fb9bd2cd925c65a8d  # v1.4.1
+      with:
+        subject-name: hardware-measurements.json
+        subject-digest: ${{ steps.hash.outputs.stdout }}
+        predicate-type: https://tinfoil.sh/predicate/hardware-measurements/v1
+        predicate-path: hardware-measurements.json
+
+    - name: Create release
+      uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65  # v2.6.2
+      with:
+        tag_name: ${{ steps.tag.outputs.tag }}
+        files: |
+          hardware-measurements.json
+          tinfoil.hash
