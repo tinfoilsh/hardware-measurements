@@ -1,6 +1,7 @@
 name: Build
 
 on:
+  pull_request:
   push:
     tags:
       - 'v*'
@@ -17,19 +18,17 @@ jobs:
     steps:
     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
 
-    - run: ./fetch-tdx-measure.sh
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - run: ./fetch-ovmf.sh
-    - run: ./measure.sh
+    - run: ./measure.py
 
     - name: Hash platform measurements
+      if: startsWith(github.ref, 'refs/tags/')
       shell: bash
       id: hash
       run: |
         echo stdout=sha256:$(sudo sha256sum hardware-measurements.json | cut -d ' ' -f 1 | sudo tee tinfoil.hash) >> $GITHUB_OUTPUT
 
     - name: Attest
+      if: startsWith(github.ref, 'refs/tags/')
       uses: actions/attest@67422f5511b7ff725f4dbd6fb9bd2cd925c65a8d  # v1.4.1
       id: attest
       with:
@@ -39,6 +38,7 @@ jobs:
         predicate-path: hardware-measurements.json
 
     - name: Create release
+      if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65  # v2.6.2
       with:
         files: |

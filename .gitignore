@@ -1,6 +1,6 @@
 tdx-measure
-measurements/
 hardware-measurements.json
-transcripts/
 OVMF.fd
 __pycache__
+.measure-*/
+*.download

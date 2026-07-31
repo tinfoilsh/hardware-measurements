@@ -6,41 +6,57 @@ These measurements are then used to verify attestation reports provided by trust
 
 ## Structure
 
-- `platforms/` - Contains platform-specific configurations and metadata
-- `measure.sh` - Script to generate hardware measurements for all platforms
-- `fetch-tdx-measure.sh` - Downloads the tdx-measure tool
-- `fetch-ovmf.sh` - Downloads the OVMF firmware
-- `analyze.py` - Utility to compare metadata files across platform configs
+- `platform.json` - Complete CPU, memory, disk, QEMU, and PCI inventory
+- `toolchain.lock.json` - Pinned tdx-measure and OVMF inputs
+- `boot/` - Shared OVMF boot variables
+- `measure.py` - Fetches pinned tools, reconstructs ACPI, and generates measurements
 
 ## Usage
 
-1. Fetch required tools:
-   ```bash
-   ./fetch-tdx-measure.sh
-   ./fetch-ovmf.sh
-   ```
+Generate measurements:
 
-2. Generate measurements:
-   ```bash
-   ./measure.sh
-   ```
+```bash
+./measure.py
+```
+
+Pass one or more platform names to measure only those entries, or use
+`--output` to select a different output path.
 
 ## Platforms
 
-Each platform directory contains:
-- `metadata.json` - Configuration file with hardware specifications
-- `metadata/` - Binary files with platform-specific data
+ACPI tables are not collected from a running CVM or checked into the
+repository. `platform.json` contains the per-platform inputs and
+`toolchain.lock.json` contains the pinned toolchain inputs. `measure.py`
+downloads and verifies `tdx-measure` and OVMF,
+translates each entry into complete metadata and the ordered QEMU device list
+used by `tinfoild`, then reconstructs the tables. The generated table must
+match the reviewed SHA-256 digest before its measurement is accepted.
+
+All retained platform definitions target production QEMU 10.1.0. The obsolete
+QEMU 9.2.1 platform variants have been removed.
+
+The offline model uses deterministic stand-ins for devices whose runtime
+arguments contain host-specific values:
+
+- `pci-testdev` occupies the same PCI slot as the vsock device.
+- A sparse `memory-backend-memfd` exposes the production guest-memory size to
+  QEMU without requiring CI runners to commit that much host RAM.
+- GPU endpoints are represented behind the same root ports; the reviewed PCI
+  hole size captures their BAR allocation, including the larger B300 window.
+- Disk controller count includes the root, config, and external-config disks,
+  plus the model disks encoded by names such as `2d`.
 
 ## Output
 
-Running `./measure.sh` generates `hardware-measurements.json` which contains the measurements for all platforms.
+Running `./measure.py` generates `hardware-measurements.json` containing the measurements for all platforms.
 
 ## GitHub Actions
 
-This repository uses GitHub Actions to automatically generate and publish hardware measurements when new tags are pushed.
+Pull requests regenerate every platform and verify the reviewed ACPI digests.
+Tag pushes additionally publish the resulting measurements.
 
 On each tag push:
-1. The workflow downloads the required tools (`tdx-measure` and `OVMF`)
+1. The workflow downloads and verifies the required tools (`tdx-measure` and `OVMF`)
 2. Generates hardware measurements for all platforms
 3. Creates an attestation using Sigstore for the `hardware-measurements.json` file
 4. Publishes the measurements and attestation as release assets
