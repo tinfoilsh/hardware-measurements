@@ -8,7 +8,9 @@ These measurements are then used to verify attestation reports provided by trust
 
 - `platforms/` - Contains platform-specific configurations and metadata
 - `measure.sh` - Script to generate hardware measurements for all platforms
-- `fetch-tdx-measure.sh` - Downloads the tdx-measure tool
+- `measure-platform.py` - Reconstructs and verifies each platform's ACPI tables
+- `platform-topologies.json` - Reviewed QEMU source, disk, and PCI topology inputs
+- `fetch-tdx-measure.sh` - Builds the pinned tdx-measure revision
 - `fetch-ovmf.sh` - Downloads the OVMF firmware
 - `analyze.py` - Utility to compare metadata files across platform configs
 
@@ -29,7 +31,23 @@ These measurements are then used to verify attestation reports provided by trust
 
 Each platform directory contains:
 - `metadata.json` - Configuration file with hardware specifications
-- `metadata/` - Binary files with platform-specific data
+- `metadata/` - Boot variables used by OVMF
+
+ACPI tables are not collected from a running CVM or checked into the
+repository. `measure-platform.py` translates each entry in
+`platform-topologies.json` into the ordered QEMU device list used by
+`tinfoild`, then asks `tdx-measure` to reconstruct the tables with the pinned
+QEMU source. The generated table must match the reviewed SHA-256 digest in the
+topology manifest before its measurement is accepted.
+
+The offline model uses deterministic stand-ins for devices whose runtime
+arguments contain host-specific values:
+
+- `pci-testdev` occupies the same PCI slot as the vsock device.
+- GPU endpoints are represented behind the same root ports; the reviewed PCI
+  hole size captures their BAR allocation, including the larger B300 window.
+- Disk controller count includes the root, config, and external-config disks,
+  plus the model disks encoded by names such as `2d`.
 
 ## Output
 
@@ -37,7 +55,8 @@ Running `./measure.sh` generates `hardware-measurements.json` which contains the
 
 ## GitHub Actions
 
-This repository uses GitHub Actions to automatically generate and publish hardware measurements when new tags are pushed.
+Pull requests regenerate every platform and verify the reviewed ACPI digests.
+Tag pushes additionally publish the resulting measurements.
 
 On each tag push:
 1. The workflow downloads the required tools (`tdx-measure` and `OVMF`)

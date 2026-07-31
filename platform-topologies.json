@@ -1,0 +1,152 @@
+{
+  "extra_large_1d_b200_new": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "25b1a4f64e33cf8411a65368ddd7fce0a865934e3bead72e1caa9c6f5064e8a3",
+    "disks": 4,
+    "pci_hole64_size": "4096G",
+    "profile": "blackwell",
+    "qemu_source": "qemu:10.1.0"
+  },
+  "extra_large_1d_b300_new": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "33f85d9967b6a85811e1ed561d739e2dcbe5e4597da4947c438dd2e604da7d5e",
+    "disks": 4,
+    "pci_hole64_end": "0x3f8006014000",
+    "pci_hole64_size": "0x78006014000",
+    "profile": "blackwell",
+    "qemu_source": "qemu:10.1.0"
+  },
+  "extra_large_1d_new": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "6d19209c843ae870cd19d2b6deccaa6d1ecefdfbebf8eaac12219c4e265a85ec",
+    "disks": 4,
+    "pci_hole64_size": "4096G",
+    "profile": "hopper",
+    "qemu_source": "qemu:10.1.0"
+  },
+  "extra_large_2d_b200_new": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "ddc2e9c8428887b02cc67a93423e9ca8b582eb49d69fa48e45d694bee3b69d21",
+    "disks": 5,
+    "pci_hole64_size": "4096G",
+    "profile": "blackwell",
+    "qemu_source": "qemu:10.1.0"
+  },
+  "extra_large_2d_b300_new": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "cdd92d995de05ca65c373c38badabcf9428155ba2c0a2676eb83dbdf9afcb6f5",
+    "disks": 5,
+    "pci_hole64_end": "0x3f8006018000",
+    "pci_hole64_size": "0x78006018000",
+    "profile": "blackwell",
+    "qemu_source": "qemu:10.1.0"
+  },
+  "extra_large_2d_new": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "ddaa5cf6ed3d64ff7dad9d23f4a793438893cb3504a46614785349665c91c324",
+    "disks": 5,
+    "pci_hole64_size": "4096G",
+    "profile": "hopper",
+    "qemu_source": "qemu:10.1.0"
+  },
+  "large_1d_new": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "6d19209c843ae870cd19d2b6deccaa6d1ecefdfbebf8eaac12219c4e265a85ec",
+    "disks": 4,
+    "pci_hole64_size": "4096G",
+    "profile": "hopper",
+    "qemu_source": "qemu:10.1.0"
+  },
+  "medium_0d": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "b073b5f59ab752e6ed51368df6d0034746e99f92c0644706bcc954638f3ea638",
+    "disks": 3,
+    "pci_hole64_end": "0x44000000000",
+    "pci_hole64_size": "4096G",
+    "pci_hole64_start": "0x4000000000",
+    "profile": "single",
+    "qemu_source": "ubuntu:25.04"
+  },
+  "medium_0d_new": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "feaffbb7f7537730add38aa67c52d8ab7c3ca3c7b903f28b5731a9515836c995",
+    "disks": 3,
+    "pci_hole64_end": "0x44000000000",
+    "pci_hole64_size": "4096G",
+    "pci_hole64_start": "0x4000000000",
+    "profile": "single",
+    "qemu_source": "qemu:10.1.0"
+  },
+  "medium_1d": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "967cecf74fc2494dcb66f0a029dddb9332a3ac4190f609bf08752f4dad69361d",
+    "disks": 4,
+    "pci_hole64_end": "0x44000000000",
+    "pci_hole64_size": "4096G",
+    "pci_hole64_start": "0x4000000000",
+    "profile": "single",
+    "qemu_source": "ubuntu:25.04"
+  },
+  "medium_1d_cpu_new": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "146009f33b65b1465a7000bd9d793f71195613b9cf3962a4ac7a00cacbb42b32",
+    "disks": 4,
+    "pci_hole64_size": "4096G",
+    "profile": "none",
+    "qemu_source": "qemu:10.1.0"
+  },
+  "medium_1d_new": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "dc4d2c1fb9357ef90736290fd0c57493d706559b8186972a0deabc0a1789d4dd",
+    "disks": 4,
+    "pci_hole64_end": "0x44000000000",
+    "pci_hole64_size": "4096G",
+    "pci_hole64_start": "0x4000000000",
+    "profile": "single",
+    "qemu_source": "qemu:10.1.0"
+  },
+  "medium_2d_new": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "353360e3d1e44a13ef7acbd27f0e174f8c0bc8525ec08a3d54e54a0e001a33f4",
+    "disks": 5,
+    "pci_hole64_end": "0x44000000000",
+    "pci_hole64_size": "4096G",
+    "pci_hole64_start": "0x4000000000",
+    "profile": "single",
+    "qemu_source": "qemu:10.1.0"
+  },
+  "medium_4d_new": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "2c94078107289b459bfe542fe81b5362c9c91e678787df0c4274d9958414014e",
+    "disks": 7,
+    "pci_hole64_end": "0x44000000000",
+    "pci_hole64_size": "4096G",
+    "pci_hole64_start": "0x4000000000",
+    "profile": "single",
+    "qemu_source": "qemu:10.1.0"
+  },
+  "mini_0d": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "f7cf708862546220835e11fcc3f0f098f4865ee6e8c3595a37c31138cf3c96a5",
+    "disks": 3,
+    "pci_hole64_size": "4096G",
+    "profile": "none",
+    "qemu_source": "ubuntu:25.04"
+  },
+  "small_0d": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "86ea2c303ebdc3013c8ac198d062714928dd7f04d901668f392a09e18b8d6a8d",
+    "disks": 3,
+    "pci_hole64_size": "4096G",
+    "profile": "none",
+    "qemu_source": "ubuntu:25.04"
+  },
+  "small_0d_new": {
+    "acpi_memory": "65536M",
+    "acpi_sha256": "1bc93916604961f79487bc4a2f99ea9c23d35b5090305027708bdf727369a0e1",
+    "disks": 3,
+    "pci_hole64_size": "4096G",
+    "profile": "none",
+    "qemu_source": "qemu:10.1.0"
+  }
+}

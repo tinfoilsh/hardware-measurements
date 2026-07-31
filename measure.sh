@@ -8,7 +8,7 @@ mkdir -p measurements/
 for dir in platforms/*; do
     name=$(basename $dir)
     echo "Measuring $name"
-    ./tdx-measure $dir/metadata.json --platform-only --json-file measurements/${name}.json
+    ./measure-platform.py "$dir" "measurements/${name}.json"
 done
 
 # Combine all measurement files into one JSON, with platform names as keys
