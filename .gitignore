@@ -4,4 +4,4 @@ hardware-measurements.json
 transcripts/
 OVMF.fd
 __pycache__
-platforms/*/.measure-*/
+.measure-*/

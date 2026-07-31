@@ -5,10 +5,9 @@ set -ex
 mkdir -p transcripts/
 mkdir -p measurements/
 
-for dir in platforms/*; do
-    name=$(basename $dir)
+while IFS= read -r name; do
     echo "Generating transcript for $name"
-    ./measure-platform.py "$dir" "measurements/${name}.json" "transcripts/${name}.txt"
-done
+    ./measure-platform.py "$name" "measurements/${name}.json" "transcripts/${name}.txt"
+done < <(jq -r 'keys[]' platform-inventory.json)
 
 rm -rf measurements/

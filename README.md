@@ -6,13 +6,12 @@ These measurements are then used to verify attestation reports provided by trust
 
 ## Structure
 
-- `platforms/` - Contains platform-specific configurations and metadata
+- `platform-inventory.json` - Complete CPU, memory, disk, QEMU, and PCI inventory
+- `boot/` - Shared OVMF boot variables
 - `measure.sh` - Script to generate hardware measurements for all platforms
 - `measure-platform.py` - Reconstructs and verifies each platform's ACPI tables
-- `platform-topologies.json` - Reviewed QEMU source, disk, and PCI topology inputs
 - `fetch-tdx-measure.sh` - Downloads the checksum-pinned Tinfoil release
 - `fetch-ovmf.sh` - Downloads the OVMF firmware
-- `analyze.py` - Utility to compare metadata files across platform configs
 
 ## Usage
 
@@ -29,16 +28,12 @@ These measurements are then used to verify attestation reports provided by trust
 
 ## Platforms
 
-Each platform directory contains:
-- `metadata.json` - Configuration file with hardware specifications
-- `metadata/` - Boot variables used by OVMF
-
 ACPI tables are not collected from a running CVM or checked into the
-repository. `measure-platform.py` translates each entry in
-`platform-topologies.json` into the ordered QEMU device list used by
-`tinfoild`, then asks `tdx-measure` to reconstruct the tables with the pinned
-QEMU source. The generated table must match the reviewed SHA-256 digest in the
-topology manifest before its measurement is accepted.
+repository. `platform-inventory.json` is the sole per-platform source of truth.
+`measure-platform.py` translates each entry into complete `tdx-measure`
+metadata and the ordered QEMU device list used by `tinfoild`, then reconstructs
+the tables with the pinned QEMU source. The generated table must match the
+reviewed SHA-256 digest in the inventory before its measurement is accepted.
 
 All retained platform definitions target production QEMU 10.1.0. The obsolete
 QEMU 9.2.1 platform variants have been removed.

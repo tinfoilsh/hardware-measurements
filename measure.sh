@@ -5,11 +5,10 @@ set -ex
 rm -rf measurements/
 mkdir -p measurements/
 
-for dir in platforms/*; do
-    name=$(basename $dir)
+while IFS= read -r name; do
     echo "Measuring $name"
-    ./measure-platform.py "$dir" "measurements/${name}.json"
-done
+    ./measure-platform.py "$name" "measurements/${name}.json"
+done < <(jq -r 'keys[]' platform-inventory.json)
 
 # Combine all measurement files into one JSON, with platform names as keys
 for file in measurements/*.json; do

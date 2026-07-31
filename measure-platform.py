@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import copy
 import hashlib
 import json
 import subprocess
@@ -9,7 +8,7 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-TOPOLOGIES = json.loads((ROOT / "platform-topologies.json").read_text())
+PLATFORMS = json.loads((ROOT / "platform-inventory.json").read_text())
 
 
 def qemu_shape(memory, topology):
@@ -64,39 +63,37 @@ def qemu_shape(memory, topology):
     }
 
 
-def resolve(platform_dir, value):
-    return str((platform_dir / value).resolve())
-
-
 def main():
     if len(sys.argv) not in (3, 4):
-        raise SystemExit(f"usage: {sys.argv[0]} PLATFORM_DIR OUTPUT_JSON [TRANSCRIPT]")
+        raise SystemExit(f"usage: {sys.argv[0]} PLATFORM OUTPUT_JSON [TRANSCRIPT]")
 
-    platform_dir = Path(sys.argv[1]).resolve()
+    name = sys.argv[1]
     output_json = Path(sys.argv[2]).resolve()
     transcript = Path(sys.argv[3]).resolve() if len(sys.argv) == 4 else None
-    name = platform_dir.name
-    topology = TOPOLOGIES.get(name)
+    topology = PLATFORMS.get(name)
     if topology is None:
         raise SystemExit(f"missing topology for {name}")
 
-    metadata = json.loads((platform_dir / "metadata.json").read_text())
-    boot = metadata["boot_config"]
-    boot["bios"] = resolve(platform_dir, boot["bios"])
-    boot["boot_order"] = resolve(platform_dir, boot["boot_order"])
-    boot["path_boot_xxxx"] = resolve(platform_dir, boot["path_boot_xxxx"])
-    boot.pop("rsdp", None)
-    boot.pop("table_loader", None)
-    metadata["direct"] = {"kernel": "/dev/null", "initrd": "/dev/null", "cmdline": ""}
+    boot = {
+        "cpus": topology["cpus"],
+        "memory": topology["memory"],
+        "bios": str((ROOT / "OVMF.fd").resolve()),
+        "boot_order": str((ROOT / "boot" / "BootOrder.bin").resolve()),
+        "path_boot_xxxx": f"{(ROOT / 'boot').resolve()}/",
+    }
+    metadata = {
+        "boot_config": boot,
+        "direct": {"kernel": "/dev/null", "initrd": "/dev/null", "cmdline": ""},
+    }
 
-    with tempfile.TemporaryDirectory(prefix=".measure-", dir=platform_dir) as temporary:
+    with tempfile.TemporaryDirectory(prefix=".measure-", dir=ROOT) as temporary:
         temporary_dir = Path(temporary)
         acpi_tables = temporary_dir / "acpi_tables.bin"
-        generation_metadata = copy.deepcopy(metadata)
-        generation_boot = generation_metadata["boot_config"]
+        generation_boot = dict(boot)
         generation_boot["memory"] = topology.get("acpi_memory", boot["memory"])
         generation_boot["qemu"] = qemu_shape(generation_boot["memory"], topology)
         generation_boot["acpi_tables"] = str(acpi_tables)
+        generation_metadata = dict(metadata, boot_config=generation_boot)
         generation_path = temporary_dir / "generation.json"
         generation_path.write_text(json.dumps(generation_metadata, indent=2) + "\n")
 
