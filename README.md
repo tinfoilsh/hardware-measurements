@@ -10,7 +10,7 @@ These measurements are then used to verify attestation reports provided by trust
 - `measure.sh` - Script to generate hardware measurements for all platforms
 - `measure-platform.py` - Reconstructs and verifies each platform's ACPI tables
 - `platform-topologies.json` - Reviewed QEMU source, disk, and PCI topology inputs
-- `fetch-tdx-measure.sh` - Builds the pinned tdx-measure revision
+- `fetch-tdx-measure.sh` - Downloads the checksum-pinned Tinfoil release
 - `fetch-ovmf.sh` - Downloads the OVMF firmware
 - `analyze.py` - Utility to compare metadata files across platform configs
 
