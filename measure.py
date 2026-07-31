@@ -12,17 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 PLATFORMS = json.loads((ROOT / "platform.json").read_text())
-
-TDX_MEASURE_URL = (
-    "https://github.com/tinfoilsh/tdx-measure-tinfoil/releases/download/"
-    "v0.1.2-tinfoil.1/tdx-measure"
-)
-TDX_MEASURE_SHA256 = "0b104e31e66179f4a96266eca7b425572f491611e9f42a72a8a1eb8244d29dd9"
-OVMF_PACKAGE_URL = (
-    "https://archive.ubuntu.com/ubuntu/pool/main/e/edk2/"
-    "ovmf_2025.02-3ubuntu2_all.deb"
-)
-OVMF_SHA256 = "9e807cb2cd4313406a3aa4becc0836671a5c64ca7bdc08a45e15260184b446bf"
+TOOLCHAIN = json.loads((ROOT / "toolchain.lock.json").read_text())
 
 
 def sha256(path):
@@ -50,19 +40,21 @@ def download(url, destination):
 
 
 def ensure_tdx_measure():
+    tool = TOOLCHAIN["tdx_measure"]
     binary = ROOT / "tdx-measure"
-    if not binary.exists() or sha256(binary) != TDX_MEASURE_SHA256:
-        print("Fetching tdx-measure v0.1.2-tinfoil.1", flush=True)
-        download(TDX_MEASURE_URL, binary)
-    if sha256(binary) != TDX_MEASURE_SHA256:
+    if not binary.exists() or sha256(binary) != tool["sha256"]:
+        print(f"Fetching tdx-measure {tool['version']}", flush=True)
+        download(tool["url"], binary)
+    if sha256(binary) != tool["sha256"]:
         raise SystemExit("tdx-measure checksum mismatch")
     binary.chmod(binary.stat().st_mode | 0o111)
     return binary
 
 
 def ensure_ovmf():
+    tool = TOOLCHAIN["ovmf"]
     ovmf = ROOT / "OVMF.fd"
-    if ovmf.exists() and sha256(ovmf) == OVMF_SHA256:
+    if ovmf.exists() and sha256(ovmf) == tool["sha256"]:
         return ovmf
 
     print("Fetching OVMF.fd", flush=True)
@@ -71,10 +63,10 @@ def ensure_ovmf():
         package = temporary_dir / "ovmf.deb"
         extracted = temporary_dir / "extracted"
         staged_ovmf = temporary_dir / "OVMF.fd"
-        download(OVMF_PACKAGE_URL, package)
+        download(tool["package_url"], package)
         subprocess.run(["dpkg-deb", "--extract", str(package), str(extracted)], check=True)
-        shutil.copyfile(extracted / "usr/share/ovmf/OVMF.fd", staged_ovmf)
-        if sha256(staged_ovmf) != OVMF_SHA256:
+        shutil.copyfile(extracted / tool["package_path"], staged_ovmf)
+        if sha256(staged_ovmf) != tool["sha256"]:
             raise SystemExit("OVMF.fd checksum mismatch")
         local_staging = ovmf.with_suffix(ovmf.suffix + ".download")
         shutil.copyfile(staged_ovmf, local_staging)

@@ -7,6 +7,7 @@ These measurements are then used to verify attestation reports provided by trust
 ## Structure
 
 - `platform.json` - Complete CPU, memory, disk, QEMU, and PCI inventory
+- `toolchain.lock.json` - Pinned tdx-measure and OVMF inputs
 - `boot/` - Shared OVMF boot variables
 - `measure.py` - Fetches pinned tools, reconstructs ACPI, and generates measurements
 
@@ -24,8 +25,9 @@ Pass one or more platform names to measure only those entries, or use
 ## Platforms
 
 ACPI tables are not collected from a running CVM or checked into the
-repository. `platform.json` is the sole per-platform source of truth.
-`measure.py` downloads and verifies the pinned `tdx-measure` and OVMF inputs,
+repository. `platform.json` contains the per-platform inputs and
+`toolchain.lock.json` contains the pinned toolchain inputs. `measure.py`
+downloads and verifies `tdx-measure` and OVMF,
 translates each entry into complete metadata and the ordered QEMU device list
 used by `tinfoild`, then reconstructs the tables. The generated table must
 match the reviewed SHA-256 digest before its measurement is accepted.
