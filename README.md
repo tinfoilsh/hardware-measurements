@@ -1,64 +1,68 @@
 # Tinfoil Hardware Measurements
 
-This repository contains platform configs for the different hardware and confidential VM configurations trusted by the Tinfoil clients when verifying remote attestation reports.
-These configs are used to derive offline measurements which are then published on a transparency log (Sigstore).
-These measurements are then used to verify attestation reports provided by trusted computing environments.
+This repository reproducibly generates the TDX platform measurements trusted
+by Tinfoil clients. ACPI tables are reconstructed offline; no running CVM or
+ACPI endpoint is required.
 
-## Structure
+## Repository layout
 
-- `platform.json` - Complete CPU, memory, disk, QEMU, and PCI inventory
-- `toolchain.lock.json` - Pinned tdx-measure and OVMF inputs
-- `boot/` - Shared OVMF boot variables
-- `measure.py` - Fetches pinned tools, reconstructs ACPI, and generates measurements
+- `platform.json` contains the inputs for every supported VM shape.
+- `toolchain.lock.json` pins `tdx-measure` and OVMF by URL and SHA-256.
+- `boot/` contains the shared OVMF boot variables.
+- `measure.py` reconstructs ACPI and generates the measurements.
 
-## Usage
+All current platforms use QEMU 10.1.0.
 
-Generate measurements:
+## Generate measurements
+
+Generate every platform:
 
 ```bash
 ./measure.py
 ```
 
-Pass one or more platform names to measure only those entries, or use
-`--output` to select a different output path.
+Generate one or more platforms:
 
-## Platforms
+```bash
+./measure.py medium_1d_new extra_large_2d_new
+```
 
-ACPI tables are not collected from a running CVM or checked into the
-repository. `platform.json` contains the per-platform inputs and
-`toolchain.lock.json` contains the pinned toolchain inputs. `measure.py`
-downloads and verifies `tdx-measure` and OVMF,
-translates each entry into complete metadata and the ordered QEMU device list
-used by `tinfoild`, then reconstructs the tables. The generated table must
-match the reviewed SHA-256 digest before its measurement is accepted.
+Use `--output` to change the output path. The default is
+`hardware-measurements.json`.
 
-All retained platform definitions target production QEMU 10.1.0. The obsolete
-QEMU 9.2.1 platform variants have been removed.
+## Add a platform
 
-The offline model uses deterministic stand-ins for devices whose runtime
-arguments contain host-specific values:
+1. Copy the closest entry in `platform.json` and give it a unique name.
+2. Set the production VM inputs:
+   - `cpus` and `memory` are the guest CPU and memory values.
+   - `disks` is the total number of SCSI controllers: three base disks plus
+     the model disks. For example, a `2d` shape uses `5`.
+   - `profile` selects the QEMU device topology: `none`, `single`, `hopper`, or
+     `blackwell`.
+   - `pci_hole64_size`, and when needed `pci_hole64_start` or
+     `pci_hole64_end`, must match the production QEMU PCI aperture.
+   - `qemu_source` must match the production QEMU version.
+   - `acpi_memory` may use a smaller sparse backing size for ACPI generation;
+     it does not change the guest memory encoded in the final measurement.
+3. If the device topology is new, update `qemu_shape()` in `measure.py` to
+   reproduce the ordered QEMU arguments used by `tinfoild`.
+4. Generate the new platform locally:
 
-- `pci-testdev` occupies the same PCI slot as the vsock device.
-- A sparse `memory-backend-memfd` exposes the production guest-memory size to
-  QEMU without requiring CI runners to commit that much host RAM.
-- GPU endpoints are represented behind the same root ports; the reviewed PCI
-  hole size captures their BAR allocation, including the larger B300 window.
-- Disk controller count includes the root, config, and external-config disks,
-  plus the model disks encoded by names such as `2d`.
+   ```bash
+   ./measure.py new_platform
+   ```
 
-## Output
+5. Review the platform inputs and generated MRTD/RTMR0. After the shape is
+   deployed, compare them with the live enclave attestation before publishing
+   a hardware-measurements release.
 
-Running `./measure.py` generates `hardware-measurements.json` containing the measurements for all platforms.
+The platform inputs and pinned toolchain are the auditable source of truth.
+Generated ACPI tables and intermediate transcripts are intentionally not
+checked in.
 
-## GitHub Actions
+## Releases
 
-Pull requests regenerate every platform and verify the reviewed ACPI digests.
-Tag pushes additionally publish the resulting measurements.
-
-On each tag push:
-1. The workflow downloads and verifies the required tools (`tdx-measure` and `OVMF`)
-2. Generates hardware measurements for all platforms
-3. Creates an attestation using Sigstore for the `hardware-measurements.json` file
-4. Publishes the measurements and attestation as release assets
-
-The attestation provides cryptographic proof of the measurement generation process and is published to Sigstore's transparency log, ensuring the integrity and provenance of the measurements.
+Pull requests regenerate every platform. Tag pushes additionally publish
+`hardware-measurements.json`, its hash, and a Sigstore attestation as release
+assets. Do not create a tag until the generated measurements have been
+reviewed against production.
