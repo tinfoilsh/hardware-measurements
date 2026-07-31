@@ -4,3 +4,4 @@ OVMF.fd
 __pycache__
 .measure-*/
 *.download
+.cursor/

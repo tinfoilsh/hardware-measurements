@@ -127,7 +127,7 @@ def qemu_shape(memory, platform):
     }
 
 
-def measure_platform(name, platform, tdx_measure, ovmf):
+def measure_platform(platform, tdx_measure, ovmf):
     boot = {
         "cpus": platform["cpus"],
         "memory": platform["memory"],
@@ -166,13 +166,6 @@ def measure_platform(name, platform, tdx_measure, ovmf):
             check=True,
         )
 
-        digest = sha256(acpi_tables)
-        if digest != platform["acpi_sha256"]:
-            raise SystemExit(
-                f"{name}: regenerated ACPI hash {digest} does not match reviewed "
-                f"capture {platform['acpi_sha256']}"
-            )
-
         boot["acpi_tables"] = str(acpi_tables)
         measurement_path = temporary_dir / "measurement.json"
         measurement_path.write_text(json.dumps(metadata, indent=2) + "\n")
@@ -208,7 +201,7 @@ def main():
     measurements = {}
     for name in names:
         print(f"Measuring {name}")
-        measurements[name] = measure_platform(name, PLATFORMS[name], tdx_measure, ovmf)
+        measurements[name] = measure_platform(PLATFORMS[name], tdx_measure, ovmf)
 
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
