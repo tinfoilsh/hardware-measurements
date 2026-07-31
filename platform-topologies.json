@@ -57,16 +57,6 @@
     "profile": "hopper",
     "qemu_source": "qemu:10.1.0"
   },
-  "medium_0d": {
-    "acpi_memory": "65536M",
-    "acpi_sha256": "b073b5f59ab752e6ed51368df6d0034746e99f92c0644706bcc954638f3ea638",
-    "disks": 3,
-    "pci_hole64_end": "0x44000000000",
-    "pci_hole64_size": "4096G",
-    "pci_hole64_start": "0x4000000000",
-    "profile": "single",
-    "qemu_source": "ubuntu:25.04"
-  },
   "medium_0d_new": {
     "acpi_memory": "65536M",
     "acpi_sha256": "feaffbb7f7537730add38aa67c52d8ab7c3ca3c7b903f28b5731a9515836c995",
@@ -76,16 +66,6 @@
     "pci_hole64_start": "0x4000000000",
     "profile": "single",
     "qemu_source": "qemu:10.1.0"
-  },
-  "medium_1d": {
-    "acpi_memory": "65536M",
-    "acpi_sha256": "967cecf74fc2494dcb66f0a029dddb9332a3ac4190f609bf08752f4dad69361d",
-    "disks": 4,
-    "pci_hole64_end": "0x44000000000",
-    "pci_hole64_size": "4096G",
-    "pci_hole64_start": "0x4000000000",
-    "profile": "single",
-    "qemu_source": "ubuntu:25.04"
   },
   "medium_1d_cpu_new": {
     "acpi_memory": "65536M",
@@ -124,22 +104,6 @@
     "pci_hole64_start": "0x4000000000",
     "profile": "single",
     "qemu_source": "qemu:10.1.0"
-  },
-  "mini_0d": {
-    "acpi_memory": "65536M",
-    "acpi_sha256": "f7cf708862546220835e11fcc3f0f098f4865ee6e8c3595a37c31138cf3c96a5",
-    "disks": 3,
-    "pci_hole64_size": "4096G",
-    "profile": "none",
-    "qemu_source": "ubuntu:25.04"
-  },
-  "small_0d": {
-    "acpi_memory": "65536M",
-    "acpi_sha256": "86ea2c303ebdc3013c8ac198d062714928dd7f04d901668f392a09e18b8d6a8d",
-    "disks": 3,
-    "pci_hole64_size": "4096G",
-    "profile": "none",
-    "qemu_source": "ubuntu:25.04"
   },
   "small_0d_new": {
     "acpi_memory": "65536M",

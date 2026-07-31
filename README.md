@@ -40,6 +40,9 @@ repository. `measure-platform.py` translates each entry in
 QEMU source. The generated table must match the reviewed SHA-256 digest in the
 topology manifest before its measurement is accepted.
 
+All retained platform definitions target production QEMU 10.1.0. The obsolete
+QEMU 9.2.1 platform variants have been removed.
+
 The offline model uses deterministic stand-ins for devices whose runtime
 arguments contain host-specific values:
 
