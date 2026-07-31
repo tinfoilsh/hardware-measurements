@@ -44,6 +44,8 @@ The offline model uses deterministic stand-ins for devices whose runtime
 arguments contain host-specific values:
 
 - `pci-testdev` occupies the same PCI slot as the vsock device.
+- A sparse `memory-backend-memfd` exposes the production guest-memory size to
+  QEMU without requiring CI runners to commit that much host RAM.
 - GPU endpoints are represented behind the same root ports; the reviewed PCI
   hole size captures their BAR allocation, including the larger B300 window.
 - Disk controller count includes the root, config, and external-config disks,

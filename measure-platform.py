@@ -57,7 +57,7 @@ def qemu_shape(memory, topology):
             "vfio-pci.x-balloon-allowed=false",
             "vfio-pci.x-no-mmap=false",
         ],
-        "objects": [f"memory-backend-ram,id=mem0,size={memory}"],
+        "objects": [f"memory-backend-memfd,id=mem0,size={memory},share=on"],
         "netdevs": ["hubport,id=net0,hubid=0"],
         "devices": devices,
         "fw_cfg": fw_cfg,
