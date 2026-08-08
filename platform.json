@@ -94,6 +94,17 @@
     "profile": "none",
     "qemu_source": "qemu:10.1.0"
   },
+  "medium_1d_4cpu_new": {
+    "acpi_memory": "65536M",
+    "cpus": 4,
+    "disks": 4,
+    "memory": "65536M",
+    "pci_hole64_end": "0x44000000000",
+    "pci_hole64_size": "4096G",
+    "pci_hole64_start": "0x4000000000",
+    "profile": "single",
+    "qemu_source": "qemu:10.1.0"
+  },
   "medium_1d_new": {
     "acpi_memory": "65536M",
     "cpus": 16,
