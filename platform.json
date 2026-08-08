@@ -18,6 +18,16 @@
     "profile": "blackwell",
     "qemu_source": "qemu:10.1.0"
   },
+  "extra_large_1d_b300_flat_new": {
+    "acpi_memory": "65536M",
+    "cpus": 32,
+    "disks": 4,
+    "memory": "524288M",
+    "pci_hole64_end": "0x3f8006018000",
+    "pci_hole64_size": "0x78006018000",
+    "profile": "blackwell",
+    "qemu_source": "qemu:10.1.0"
+  },
   "extra_large_1d_new": {
     "acpi_memory": "65536M",
     "cpus": 32,
