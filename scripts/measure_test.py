@@ -19,6 +19,25 @@ class MeasurementPlatformsTest(unittest.TestCase):
             platforms["medium_1d_v011"]["tdx_measure"], "tdx_measure_v011"
         )
 
+    def test_covers_cpu_only_fleet_shapes(self):
+        platforms = measure.measurement_platforms()
+
+        expected = {
+            "small_0d_new": (8, "16384M", 3),
+            "small_0d_v011": (8, "16384M", 3),
+            "small_0d_32gb_new": (8, "32768M", 3),
+            "small_0d_32gb_v011": (8, "32768M", 3),
+            "tiny_0d_new": (2, "2048M", 3),
+            "tiny_0d_v011": (2, "2048M", 3),
+            "medium_1d_cpu_new": (16, "65536M", 4),
+            "medium_1d_cpu_v011": (16, "65536M", 4),
+        }
+        for name, shape in expected.items():
+            platform = platforms[name]
+            self.assertEqual(
+                (platform["cpus"], platform["memory"], platform["disks"]), shape
+            )
+
     def test_v011_fixed_virtio_topology(self):
         shape = measure.qemu_shape(
             "65536M", measure.measurement_platforms()["medium_1d_v011"]
