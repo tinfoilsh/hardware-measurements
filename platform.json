@@ -146,5 +146,23 @@
     "pci_hole64_size": "4096G",
     "profile": "none",
     "qemu_source": "qemu:10.1.0"
+  },
+  "small_0d_32gb_new": {
+    "acpi_memory": "32768M",
+    "cpus": 8,
+    "disks": 3,
+    "memory": "32768M",
+    "pci_hole64_size": "4096G",
+    "profile": "none",
+    "qemu_source": "qemu:10.1.0"
+  },
+  "tiny_0d_new": {
+    "acpi_memory": "2048M",
+    "cpus": 2,
+    "disks": 3,
+    "memory": "2048M",
+    "pci_hole64_size": "4096G",
+    "profile": "none",
+    "qemu_source": "qemu:10.1.0"
   }
 }

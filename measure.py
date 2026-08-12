@@ -15,6 +15,18 @@ PLATFORMS = json.loads((ROOT / "platform.json").read_text())
 TOOLCHAIN = json.loads((ROOT / "toolchain.lock.json").read_text())
 
 
+def measurement_platforms():
+    platforms = dict(PLATFORMS)
+    for name, platform in PLATFORMS.items():
+        v011_name = f"{name.removesuffix('_new')}_v011"
+        platforms[v011_name] = {
+            **platform,
+            "topology": "v0.11",
+            "tdx_measure": "tdx_measure_v011",
+        }
+    return platforms
+
+
 def sha256(path):
     digest = hashlib.sha256()
     with path.open("rb") as source:
@@ -39,9 +51,9 @@ def download(url, destination):
             time.sleep(2 ** attempt)
 
 
-def ensure_tdx_measure():
-    tool = TOOLCHAIN["tdx_measure"]
-    binary = ROOT / "tdx-measure"
+def ensure_tdx_measure(tool_name):
+    tool = TOOLCHAIN[tool_name]
+    binary = ROOT / tool["binary"]
     if not binary.exists() or sha256(binary) != tool["sha256"]:
         print(f"Fetching tdx-measure {tool['version']}", flush=True)
         download(tool["url"], binary)
@@ -76,20 +88,42 @@ def ensure_ovmf():
 
 
 def qemu_shape(memory, platform):
-    devices = [
-        "e1000,netdev=net0,bus=pcie.0,addr=0x2,romfile=",
-        "pci-testdev",
-    ]
-    devices.extend(
-        f"virtio-scsi-pci,id=scsi{index},disable-legacy=on,iommu_platform=true"
-        for index in range(platform["disks"])
-    )
+    topology = platform.get("topology", "legacy")
+    if topology == "legacy":
+        drives = None
+        devices = [
+            "e1000,netdev=net0,bus=pcie.0,addr=0x2,romfile=",
+            "pci-testdev",
+        ]
+        devices.extend(
+            f"virtio-scsi-pci,id=scsi{index},disable-legacy=on,iommu_platform=true"
+            for index in range(platform["disks"])
+        )
+    elif topology == "v0.11":
+        drives = [
+            f"file=/dev/null,if=none,id=disk{index},format=raw,readonly=on"
+            for index in range(platform["disks"])
+        ]
+        devices = [
+            "virtio-serial-pci,bus=pcie.0,addr=0x1,disable-legacy=on,iommu_platform=true,romfile=",
+            "virtio-net-pci,netdev=net0,bus=pcie.0,addr=0x2,disable-legacy=on,"
+            "iommu_platform=true,romfile=",
+        ]
+        devices.extend(
+            f"virtio-blk-pci,drive=disk{index},id=blk{index},bus=pcie.0,addr=0x{index + 4:x},"
+            "disable-legacy=on,iommu_platform=true,romfile="
+            for index in range(platform["disks"])
+        )
+    else:
+        raise ValueError(f"unknown topology: {topology}")
 
     fw_cfg = []
     profile = platform["profile"]
     if profile == "single":
         devices.append("pcie-root-port,id=pci.1,bus=pcie.0,slot=1,pref64-reserve=512G")
         devices.append("pci-testdev,bus=pci.1,addr=0x0")
+        if topology == "v0.11":
+            fw_cfg.append("name=opt/ovmf/X-PciMmio64Mb,string=262144")
     elif profile in ("blackwell", "hopper"):
         root_ports = 8 if profile == "blackwell" else 12
         for index in range(root_ports):
@@ -109,7 +143,7 @@ def qemu_shape(memory, platform):
     elif profile != "none":
         raise ValueError(f"unknown profile: {profile}")
 
-    return {
+    shape = {
         "machine": "q35,kernel_irqchip=split,memory-backend=mem0,smm=off,pic=off",
         "pci_hole64_start": platform.get("pci_hole64_start"),
         "pci_hole64_end": platform.get("pci_hole64_end"),
@@ -125,6 +159,9 @@ def qemu_shape(memory, platform):
         "devices": devices,
         "fw_cfg": fw_cfg,
     }
+    if drives is not None:
+        shape["drives"] = drives
+    return shape
 
 
 def measure_platform(platform, tdx_measure, ovmf):
@@ -191,17 +228,22 @@ def main():
     parser.add_argument("--output", default="hardware-measurements.json")
     args = parser.parse_args()
 
-    names = args.platforms or sorted(PLATFORMS)
-    unknown = sorted(set(names) - set(PLATFORMS))
+    platforms = measurement_platforms()
+    names = args.platforms or sorted(platforms)
+    unknown = sorted(set(names) - set(platforms))
     if unknown:
         parser.error(f"unknown platform: {', '.join(unknown)}")
 
-    tdx_measure = ensure_tdx_measure()
     ovmf = ensure_ovmf()
+    tdx_measure_tools = {}
     measurements = {}
     for name in names:
         print(f"Measuring {name}")
-        measurements[name] = measure_platform(PLATFORMS[name], tdx_measure, ovmf)
+        platform = platforms[name]
+        tool_name = platform.get("tdx_measure", "tdx_measure")
+        if tool_name not in tdx_measure_tools:
+            tdx_measure_tools[tool_name] = ensure_tdx_measure(tool_name)
+        measurements[name] = measure_platform(platform, tdx_measure_tools[tool_name], ovmf)
 
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)

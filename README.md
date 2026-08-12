@@ -11,7 +11,16 @@ ACPI endpoint is required.
 - `boot/` contains the shared OVMF boot variables.
 - `measure.py` reconstructs ACPI and generates the measurements.
 
-All current platforms use QEMU 10.1.0.
+All current platforms use QEMU 10.1.0. During the rolling cvmimage v0.11
+migration, each platform is published in two additive variants:
+
+- Existing names retain the legacy e1000, virtio-SCSI, and placeholder PCI
+  topology.
+- Names ending in `_v011` use the cvmimage v0.11 virtio-serial, virtio-net,
+  and read-only null-backed virtio-blk topology.
+
+Each generation uses its original pinned `tdx-measure` release. This keeps
+all existing measurements stable while newly updated enclaves are added.
 
 ## Generate measurements
 
@@ -35,8 +44,8 @@ Use `--output` to change the output path. The default is
 1. Copy the closest entry in `platform.json` and give it a unique name.
 2. Set the production VM inputs:
    - `cpus` and `memory` are the guest CPU and memory values.
-   - `disks` is the total number of SCSI controllers: three base disks plus
-     the model disks. For example, a `2d` shape uses `5`.
+   - `disks` is the total number of disks: three base disks plus the model
+     disks. For example, a `2d` shape uses `5`.
    - `profile` selects the QEMU device topology: `none`, `single`, `hopper`, or
      `blackwell`.
    - `pci_hole64_size`, and when needed `pci_hole64_start` or
@@ -45,7 +54,8 @@ Use `--output` to change the output path. The default is
    - `acpi_memory` may use a smaller sparse backing size for ACPI generation;
      it does not change the guest memory encoded in the final measurement.
 3. If the device topology is new, update `qemu_shape()` in `measure.py` to
-   reproduce the ordered QEMU arguments used by `tinfoild`.
+   reproduce the ordered QEMU arguments used by `tinfoild`. Do not replace an
+   existing topology while its measurements are still deployed.
 4. Generate the new platform locally:
 
    ```bash
