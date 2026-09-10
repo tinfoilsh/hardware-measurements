@@ -29,6 +29,8 @@ class MeasurementPlatformsTest(unittest.TestCase):
             "small_0d_32gb_v011": (8, "32768M", 3),
             "tiny_0d_new": (2, "2048M", 3),
             "tiny_0d_v011": (2, "2048M", 3),
+            "tiny_0d_5disk_new": (2, "2048M", 5),
+            "tiny_0d_5disk_v011": (2, "2048M", 5),
             "medium_1d_cpu_new": (16, "65536M", 4),
             "medium_1d_cpu_v011": (16, "65536M", 4),
         }

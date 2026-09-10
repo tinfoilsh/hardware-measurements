@@ -164,5 +164,14 @@
     "pci_hole64_size": "4096G",
     "profile": "none",
     "qemu_source": "qemu:10.1.0"
+  },
+  "tiny_0d_5disk_new": {
+    "acpi_memory": "2048M",
+    "cpus": 2,
+    "disks": 5,
+    "memory": "2048M",
+    "pci_hole64_size": "4096G",
+    "profile": "none",
+    "qemu_source": "qemu:10.1.0"
   }
 }
