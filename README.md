@@ -21,6 +21,8 @@ migration, each platform is published in two additive variants:
 
 Each generation uses its original pinned `tdx-measure` release. This keeps
 all existing measurements stable while newly updated enclaves are added.
+Shapes introduced only for v0.11 specify `topology: v0.11` and
+`tdx_measure: tdx_measure_v011` explicitly; no legacy variant is generated.
 
 ## Generate measurements
 
@@ -46,8 +48,8 @@ Use `--output` to change the output path. The default is
    - `cpus` and `memory` are the guest CPU and memory values.
    - `disks` is the total number of disks: three base disks plus the model
      disks. For example, a `2d` shape uses `5`.
-   - `profile` selects the QEMU device topology: `none`, `single`, `hopper`, or
-     `blackwell`.
+   - `profile` selects the QEMU device topology: `none`, `single`, `quad`,
+     `hopper`, or `blackwell`. `quad` uses four individually reserved GPU ports.
    - `pci_hole64_size`, and when needed `pci_hole64_start` or
      `pci_hole64_end`, must match the production QEMU PCI aperture.
    - `qemu_source` must match the production QEMU version.
