@@ -1,4 +1,17 @@
 {
+  "b200_56cpu_768gb_4gpu_4disk_v011": {
+    "acpi_memory": "65536M",
+    "cpus": 56,
+    "disks": 4,
+    "memory": "786432M",
+    "pci_hole64_end": "0x50000000000",
+    "pci_hole64_size": "4096G",
+    "pci_hole64_start": "0x10000000000",
+    "profile": "quad",
+    "qemu_source": "qemu:10.1.0",
+    "tdx_measure": "tdx_measure_v011",
+    "topology": "v0.11"
+  },
   "extra_large_1d_b200_new": {
     "acpi_memory": "65536M",
     "cpus": 32,
