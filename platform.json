@@ -69,6 +69,18 @@
     "profile": "blackwell",
     "qemu_source": "qemu:10.1.0"
   },
+  "extra_large_2d_b300_5disk_v011": {
+    "acpi_memory": "65536M",
+    "cpus": 32,
+    "disks": 5,
+    "memory": "524288M",
+    "pci_hole64_end": "0x3f800601c000",
+    "pci_hole64_size": "0x7800601c000",
+    "profile": "blackwell",
+    "qemu_source": "qemu:10.1.0",
+    "tdx_measure": "tdx_measure_v011",
+    "topology": "v0.11"
+  },
   "extra_large_2d_new": {
     "acpi_memory": "65536M",
     "cpus": 32,
@@ -186,6 +198,17 @@
     "pci_hole64_size": "4096G",
     "profile": "none",
     "qemu_source": "qemu:10.1.0"
+  },
+  "small_0d_8gb_2cpu_4disk_v011": {
+    "acpi_memory": "8192M",
+    "cpus": 2,
+    "disks": 4,
+    "memory": "8192M",
+    "pci_hole64_size": "4096G",
+    "profile": "none",
+    "qemu_source": "qemu:10.1.0",
+    "tdx_measure": "tdx_measure_v011",
+    "topology": "v0.11"
   },
   "small_0d_8gb_4cpu_4disk_new": {
     "acpi_memory": "8192M",
