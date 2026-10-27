@@ -221,6 +221,17 @@
     "profile": "none",
     "qemu_source": "qemu:10.1.0"
   },
+  "small_0d_4gb_4cpu_4disk_v011": {
+    "acpi_memory": "4096M",
+    "cpus": 4,
+    "disks": 4,
+    "memory": "4096M",
+    "pci_hole64_size": "4096G",
+    "profile": "none",
+    "qemu_source": "qemu:10.1.0",
+    "tdx_measure": "tdx_measure_v011",
+    "topology": "v0.11"
+  },
   "small_0d_8gb_2cpu_4disk_v011": {
     "acpi_memory": "8192M",
     "cpus": 2,
